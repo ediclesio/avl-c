@@ -10,50 +10,23 @@ struct no
 
 typedef struct no No;
 
-void criarNo(No *pt, int chave)
+void inicio_no(No **pt, int chave)
 {
-    pt = malloc(sizeof(No));
-    pt->chave = chave;
-    pt->bal = 0;
-    pt->esq = pt->dir = NULL;
+    (*pt) = malloc(sizeof(No));
+    (*pt)->chave = chave;
+    (*pt)->bal = 0;
+    (*pt)->esq = (*pt)->dir = NULL;
 }
 
 void preordem(No *pt)
 {
-    printf("%d(%d) ", pt->chave, pt->bal);
+    printf("%d ", pt->chave);
 
     if (pt->esq != NULL)
         preordem(pt->esq);
     
     if (pt->dir != NULL)
         preordem(pt->dir);
-}
-
-void buscar(int x, No **pt, int *f)
-{
-    if ((*pt) == NULL) {
-        *f = 0;
-    } else {
-        if (x == (*pt)->chave) {
-            *f = 1;
-        } else {
-            if (x < (*pt)->chave) {
-                if ((*pt)->esq == NULL) {
-                    *f = 2;
-                } else {
-                    (*pt) = (*pt)->esq;
-                    buscar(x, pt, f);
-                }
-            } else {
-                if ((*pt)->dir == NULL) {
-                    *f = 3;
-                } else {
-                    (*pt) = (*pt)->dir;
-                    buscar(x, pt, f);
-                }
-            }
-        }
-    }
 }
 
 void caso1(No **pt, bool *h)
@@ -97,7 +70,6 @@ void caso2(No **pt, bool *h)
     No *ptu = (*pt)->dir;
     
     if (ptu->bal == 1) {
-        // printf("[%d]\n", (*pt)->chave);
         (*pt)->dir = ptu->esq;
         ptu->esq = *pt;
         (*pt)->bal = 0;
@@ -132,11 +104,7 @@ void caso2(No **pt, bool *h)
 void insAVL(int x, No **pt, bool *h)
 {
     if (*pt == NULL) {
-        No *novo = malloc(sizeof(No));
-        novo->chave = x;
-        novo->bal = 0;
-        novo->esq = novo->dir = NULL;
-        *pt = novo;
+        inicio_no(&(*pt), x);
         *h = true;
     } else {
         if (x == (*pt)->chave) {
@@ -175,7 +143,6 @@ void insAVL(int x, No **pt, bool *h)
                         break;
                     case 0:
                         (*pt)->bal = 1;
-                        // printf("(%d) x: %d\n", (*pt)->chave, x);
                         break;
                     case 1:
                         caso2(pt, h);
