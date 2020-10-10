@@ -359,45 +359,63 @@ void remAVL(int x, No **pt, bool *h)
 
 int main()
 {
-    bool h = false;
-    No *ptraiz = NULL;
-    
-    insAVL(8, &ptraiz, &h);
-    insAVL(5, &ptraiz, &h);
-    insAVL(7, &ptraiz, &h);
-    
-    if (ptraiz != NULL)
-        preordem(ptraiz);
-    puts("");
+    srand(time(NULL));
 
-    insAVL(4, &ptraiz, &h);
-    insAVL(12, &ptraiz, &h);
-    insAVL(14, &ptraiz, &h);
+    int i, c, f, x, AVLs = 10, lenIns = 10000, lenRem = 1000;
+    bool h, b;
+    No *ptraiz[1000], *pt;
 
-    preordem(ptraiz);
-    puts("");
 
-    insAVL(10, &ptraiz, &h);
-    insAVL(9, &ptraiz, &h);
+    for (i = 0; i < AVLs; i++) {
+        ptraiz[i] = NULL;
+        
+        b = true;
+        c = 0;
 
-    preordem(ptraiz);
-    puts("");
+        while(c < lenIns) {
+            h = false;
+            x = rand() % 100000;
+            insAVL(x, &ptraiz[i], &h);
 
-    insAVL(3, &ptraiz, &h);
-    insAVL(6, &ptraiz, &h);
+            c = contarNos(ptraiz[i]);
+        }
 
-    preordem(ptraiz);
-    puts("");
+        printf("AVL[%d] tem %d nós após inserir as chaves\n", i, c);
 
-    insAVL(11, &ptraiz, &h);
+        verificarBals(ptraiz[i], &b);
 
-    preordem(ptraiz);
-    puts("");
+        if (b == true) printf("Continua AVL\n");
+        else {
+            printf("Não continua AVL\n"); 
+            return 0;
+        }
+        
+        c = 0;
 
-    insAVL(13, &ptraiz, &h);
+        while(c < lenRem) {
+            x = rand() % 100000;
+            h = false;
+            f = -1;
+            pt = ptraiz[i];
+            buscar(x, &pt, &f);
+            
+            if (f == 1){
+                remAVL(x, &ptraiz[i], &h);
+                c++;
+            }
+        }
+        
+        c = contarNos(ptraiz[i]);
 
-    preordem(ptraiz);
-    puts("");
+        printf("AVL[%d] tem %d nós após as %d remoções\n", i, c, lenRem);
+
+        b = true;
+        verificarBals(ptraiz[i], &b);
+
+        if (b == true) printf("Continua AVL\n\n");
+        else printf("Não continua AVL\n\n");
+        
+    }
 
     return 0;
 }
